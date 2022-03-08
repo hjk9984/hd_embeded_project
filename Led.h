@@ -28,5 +28,6 @@ void Blue_On(void);
 void Blue_Off(void);
 
 void setting_LED(int);
+void blink_Red_LED(int);
 
 #endif /* LED_H_ */

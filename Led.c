@@ -36,6 +36,16 @@ void setting_LED(int status){
         //¾çºÒ on
         Red_On();
         Blue_On();
+        for(int i=0; i < DELAY/2; i++);
+        Red_Off();
+        Blue_Off();
+        for(int i=0; i < DELAY/2; i++);
+        Red_On();
+        Blue_On();
+        for(int i=0; i < DELAY/2; i++);
+        Red_Off();
+        Blue_Off();
+
     }
     else if(status == DOOR_LOCK){
         Red_On();
@@ -53,4 +63,17 @@ void setting_LED(int status){
         Red_On();
         Blue_Off();
     }
+}
+
+void blink_Red_LED(int status){
+    if(status != DOOR_LOCK)
+        return;
+
+    Red_Off();
+    for(int i=0; i < DELAY/2; i++);
+    Red_On();
+    for(int i=0; i < DELAY/2; i++);
+    Red_Off();
+    for(int i=0; i < DELAY/2; i++);
+    Red_On();
 }
