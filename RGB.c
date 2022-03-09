@@ -45,7 +45,6 @@ void RGB_BLUE_off()
     PORT10_OMR |= (1<<PCL3);            // Clear LED BLUE
 }
 
-// status 에 따라 led 조절
 void setting_RGB(int status){
     if (status < 0 || status > 4){
 
@@ -55,7 +54,8 @@ void setting_RGB(int status){
 
     }
     else if(status == DOOR_UNLOCK){
-
+        RGB_RED_off();
+        RGB_BLUE_on();
     }
     else if(status == CAR_IN_UNLOCK){
         RGB_RED_on();

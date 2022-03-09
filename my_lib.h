@@ -262,7 +262,6 @@ typedef struct CCU6 {
 #define PS1             1
 #define PS2             2
 
-
 void init_Switch(void);
 void init_LED(void);
 void init_LED_RGB(void);
@@ -270,4 +269,3 @@ void init_GTM_TOM0_PWM_RGB(void);
 void init_VADC(void);
 unsigned int GetVADC4(int channel);
 void init_CCU6(myCCU6 *CCU6, int ms, int int_priority);
-int check_pwd(int *stack);

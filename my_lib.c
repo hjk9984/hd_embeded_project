@@ -253,16 +253,3 @@ void init_CCU6(myCCU6 *CCU6, int ms, int int_priority)
     /* CCU6 T12 Start */
     CCU6->TCTR4 = (1 << T12RS);                  // T12 starts counting
 }
-
-int check_pwd(int *stack){
-    // stack의 크기는 4로 고정
-    volatile unsigned int value = 1;
-    volatile unsigned int PWD[4]={1,1,1,1};
-    for(volatile int i=0;i<4;i++){
-        if(stack[i]!=PWD[i]){
-            value=0;                //하나라도 틀리면 value=0이 되고 break
-            break;                  //다 맞으면 value는 1로 유지
-        }
-    }
-    return value;
-}
