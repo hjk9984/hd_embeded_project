@@ -28,6 +28,10 @@ int core0_main(void)
     init_GTM_TOM0_PWM_RGB();
     init_VADC();
     init_RGBLED();
+    init_Buzzer();
+    init_GTM_TOM0_PWM();
+
+    GTM_CMU_CLK_EN &= ~((0x2) << EN_FXCLK);     // buzzer pwm disable
 
     // CCU61 T12 100ms
     init_CCU6((myCCU6 *)&CCU61,100,0x0F);

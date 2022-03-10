@@ -2,6 +2,7 @@
 #include "my_lib.h"
 #include "Status.h"
 #include "Led.h"
+#include "PWM_Buzzer.h"
 
 int stack[5]={0,};
 
@@ -35,19 +36,30 @@ unsigned int Unlock(){
             if(SW1_debounce_prev!=SW1_debounce | SW2_debounce_prev!=SW2_debounce)
                 stack_cnt++;
 
+            //buzzer on when switch is pushed
+            if(SW1_debounce_prev == 1 && SW1_debounce == 0)
+                note(0, 16);
+
+            if(SW2_debounce_prev == 1 && SW2_debounce == 0)
+                note(1, 16);
+
+//            if(SW1_debounce_prev == 1 && SW1_debounce == 0){
+//                            note(0, 16);
+//                    }
             SW_state_prev = SW_state_curr;
 
             SW_state_curr = (SW2_debounce<<1) | (SW1_debounce<<0);          // [sw2_debounce,sw1_debounce]
 
             if(SW_state_curr!=SW_state_prev)
                 SW_state_cnt=0;
-            else if(SW_state_cnt<5)
+            else if(SW_state_cnt<5){
                 SW_state_cnt++;
+            }
             else{
                 SW_state_debounce=SW_state_curr;
             }
 
-            if( SW_state_debounce != 0 )                            // ¹º°¡ ´­·Á¼­ debounce¿¡ º¯È­°¡ »ý±â¸é
+            if( SW_state_debounce != 0 )                            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ debounceï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
             {
 
                 if     ( SW_state_debounce == 0x01 )                // SW1 is pushed,
@@ -62,21 +74,22 @@ unsigned int Unlock(){
     //                stack_cnt+=irq_timer;
                     PORT10_OMR = (1<<PS2)   ;                       // LED BLUE on
                 }
-                else                                                // µÑ´Ù ´­¸®¸é error·Î °£ÁÖ, stackÃÊ±âÈ­, default·Î...
+                else                                                // ï¿½Ñ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ errorï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, stackï¿½Ê±ï¿½È­, defaultï¿½ï¿½...
                 {
                     stack_cnt=0;
                     for(volatile int i =0;i<5;i++)
                         stack[i]=0;
 
-                    // Æ²¸®¸é µÎ¹ø RED blink
+                    // Æ²ï¿½ï¿½ï¿½ï¿½ ï¿½Î¹ï¿½ RED blink
                     PORT10_OMR = (1<<PCL1);                         // LED RED  off
                     PORT10_OMR = (1<<PS1)  ;                        // LED RED  on
                     PORT10_OMR = (1<<PS1) ;                         // LED RED  on
                 }
+
             }
             else
-            // ¾Æ¹«°Íµµ ´­¸®Áö ¾ÊÀº »óÅÂ
-            // RED LED¸¸ ÄÑ ³ö¶ó
+            // ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // RED LEDï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             {
                 PORT10_OMR = (1<<PCL2);                             // LED BLUE  off
                 PORT10_OMR = (1<<PC1);
@@ -85,10 +98,10 @@ unsigned int Unlock(){
             }
 
 
-            // stack_cnt==8ÀÌ¸é stack°ú ºñ±³
+            // stack_cnt==8ï¿½Ì¸ï¿½ stackï¿½ï¿½ ï¿½ï¿½
             if(stack_cnt==8){
                 if(check_pwd(stack)){
-                    // ¸¸¾à ÀÏÄ¡ÇÏ¸é BLUE LED on»óÅÂ, while¹® break
+                    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ï¸ï¿½ BLUE LED onï¿½ï¿½ï¿½ï¿½, whileï¿½ï¿½ break
                     PORT10_OMR = (1<<PCL2);                         // LED BLUE  off
                     for(unsigned int delay=0;delay<DELAY/6;delay++);
                     PORT10_OMR = (1<<PS2)   ;                       // LED BLUE  on
@@ -102,7 +115,7 @@ unsigned int Unlock(){
                     return 1;
                 }
                 else{
-                    //ºñ±³ÇÑ°Ô Æ²·ÈÀ¸¸é µÎ¹ø RED blink, stack_cntÃÊ±âÈ­, stackÃÊ±âÈ­
+                    //ï¿½ï¿½ï¿½Ñ°ï¿½ Æ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¹ï¿½ RED blink, stack_cntï¿½Ê±ï¿½È­, stackï¿½Ê±ï¿½È­
                     stack_cnt=0;
                     for(unsigned int i=0;i<5;i++){
                         stack[i]=0;
@@ -122,13 +135,13 @@ unsigned int Unlock(){
 }
 
 int check_pwd(int *stack){
-    // stackÀÇ Å©±â´Â 4·Î °íÁ¤
+    // stackï¿½ï¿½ Å©ï¿½ï¿½ï¿½ 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     int value = 1;
     volatile unsigned int PWD[4]={1,1,1,1};
     for(volatile int i=0;i<4;i++){
         if(stack[i]!=PWD[i]){
-            value=0;                //ÇÏ³ª¶óµµ Æ²¸®¸é value=0ÀÌ µÇ°í break
-            break;                  //´Ù ¸ÂÀ¸¸é value´Â 1·Î À¯Áö
+            value=0;                //ï¿½Ï³ï¿½ï¿½ï¿½ Æ²ï¿½ï¿½ï¿½ï¿½ value=0ï¿½ï¿½ ï¿½Ç°ï¿½ break
+            break;                  //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ valueï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
     }
     return value;
@@ -138,8 +151,8 @@ int check_pwd(int *stack){
 __interrupt( 0x0F ) __vector_table( 0 )
 void CCU61_T12_ISR(void)
 {
-    // ¿©±â¼± interrupt¸¦ SW1,2·ÎºÎÅÍ ¹ÞÀ½
-    // SW1ÀÌ 1ÃÊ ÀÌ»ó ´­¸®¸é SW1_debounce=1
+    // ï¿½ï¿½ï¿½â¼± interruptï¿½ï¿½ SW1,2ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // SW1ï¿½ï¿½ 1ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ SW1_debounce=1
     SW1_prev = SW1_curr;
     SW1_curr = (PORT02_IN & (1<<P0)) == 0;
     SW2_prev = SW2_curr;
