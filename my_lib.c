@@ -1,4 +1,5 @@
 #include "my_lib.h"
+#include "Led.h"
 
 void init_VADC(void)
 {
@@ -67,16 +68,16 @@ unsigned int GetVADC4(int channel)
 }
 
 /* Initialize LED (RED,BLUE) */
-void init_LED(void)
-{
-    /* Reset PC1 & PC2 in IOCR0*/
-    PORT10_IOCR0 &= ~((0x1F) << PC1);
-    PORT10_IOCR0 &= ~((0x1F) << PC2);
-
-    /* Set PC1 & PC2 with push-pull(2b10000) */
-    PORT10_IOCR0 |= ((0x10) << PC1);
-    PORT10_IOCR0 |= ((0x10) << PC2);
-}
+//void init_LED(void)
+//{
+//    /* Reset PC1 & PC2 in IOCR0*/
+//    PORT10_IOCR0 &= ~((0x1F) << PC1);
+//    PORT10_IOCR0 &= ~((0x1F) << PC2);
+//
+//    /* Set PC1 & PC2 with push-pull(2b10000) */
+//    PORT10_IOCR0 |= ((0x10) << PC1);
+//    PORT10_IOCR0 |= ((0x10) << PC2);
+//}
 
 /* Initialize Switch2 */
 void init_Switch(void)
