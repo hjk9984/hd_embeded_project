@@ -101,6 +101,10 @@ volatile unsigned int distance_curr;
 #define PCL1            17
 #define PCL2            18
 
+volatile int get_distance(){
+    return distance;
+}
+
 int Parked(void)
 {
     init_LED();

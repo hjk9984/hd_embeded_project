@@ -8,6 +8,10 @@
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
 unsigned int status = DOOR_LOCK;
 
+volatile int get_status() {
+    return status;
+}
+
 int core0_main(void)
 {
     IfxCpu_enableInterrupts();
@@ -54,8 +58,16 @@ int core0_main(void)
              }
         }
         else if(status == CAR_IN_LOCK){
-            if(Unlock())
+            int tmp = Unlock();
+            if(tmp == 1)
                 status = CAR_IN_UNLOCK;
+            else if(tmp == 2){
+                for(int i=0; i < 5; i++){
+                    note(0, 8);
+                    for(int j=0; j<50000000; j++);
+                }
+                status = DOOR_LOCK;
+            }
         }
         else if(status==CAR_IN_UNLOCK){
             if(Unparked()){

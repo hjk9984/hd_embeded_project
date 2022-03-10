@@ -28,6 +28,8 @@ unsigned int Unlock(){
     SW_state_debounce = 0;
     while(1)
         {
+            if(get_distance() > 50 && get_status() == CAR_IN_LOCK)
+                return 2;
             irq_timer = 0;
             SW1_debounce_prev=SW1_debounce;
             SW2_debounce_prev=SW2_debounce;
