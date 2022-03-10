@@ -1,6 +1,7 @@
 #include "Lock_Unlock.h"
 #include "my_lib.h"
 #include "Status.h"
+#include "Led.h"
 
 int stack[5]={0,};
 
@@ -114,6 +115,7 @@ unsigned int Unlock(){
                     PORT10_OMR = (1<<PCL1);                         // LED RED  off
                     for(unsigned int delay=0;delay<DELAY/6;delay++);
                     }
+                    return 0;
                 }
             }
         }
