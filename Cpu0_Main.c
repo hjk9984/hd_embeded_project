@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
-unsigned int status;
+unsigned int status = DOOR_LOCK;
 
 int core0_main(void)
 {
@@ -33,21 +33,31 @@ int core0_main(void)
 
     // ENTIRE SEQUENCE
     while(1){
-        status = DOOR_LOCK;             //      DOOR LOCKED
-        /*SW Enabled*/
-        /*UltraSonic Disabled*/
+        setting_LED(status);
+        if(status == DOOR_LOCK){
+            if(Unlock())
+                status = DOOR_UNLOCK;
+        }
+        else if(status == DOOR_UNLOCK){
 
-        if(Unlock())
-            status = DOOR_UNLOCK;       //      DOOR UNLOCKED
+        }
 
-        /*RGB LED Enabled*/
-        /*UltraSonic Enabled*/
 
-        if(Parked())
-            status = CAR_IN_UNLOCK;     //      DOOR UNLOCKED   /   PARKED
-            /*do something*/
-            status = CAR_IN_LOCK;       //      DOOR LOCKED     /   PARKED
-        while(1);
+//        status = DOOR_LOCK;             //      DOOR LOCKED
+//        /*SW Enabled*/
+//        /*UltraSonic Disabled*/
+//
+//        if(Unlock())
+//            status = DOOR_UNLOCK;       //      DOOR UNLOCKED
+//
+//        /*RGB LED Enabled*/
+//        /*UltraSonic Enabled*/
+//
+//        if(Parked())
+//            status = CAR_IN_UNLOCK;     //      DOOR UNLOCKED   /   PARKED
+//            /*do something*/
+//            status = CAR_IN_LOCK;       //      DOOR LOCKED     /   PARKED
+//        while(1);
     }
     return (1);
 }
