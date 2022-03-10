@@ -102,6 +102,11 @@ unsigned int Unlock(){
             if(stack_cnt==8){
                 if(check_pwd(stack)){
                     // ���� ��ġ�ϸ� BLUE LED on����, while�� break
+
+                    note(0,18);
+                    note(2,18);
+                    note(3,18);
+
                     PORT10_OMR = (1<<PCL2);                         // LED BLUE  off
                     for(unsigned int delay=0;delay<DELAY/6;delay++);
                     PORT10_OMR = (1<<PS2)   ;                       // LED BLUE  on
@@ -119,15 +124,19 @@ unsigned int Unlock(){
                     stack_cnt=0;
                     for(unsigned int i=0;i<5;i++){
                         stack[i]=0;
-                    PORT10_OMR = (1<<PS1)   ;                       // LED RED  on
-                    for(unsigned int delay=0;delay<DELAY/6;delay++);
-                    PORT10_OMR = (1<<PCL1);                         // LED RED  off
-                    for(unsigned int delay=0;delay<DELAY/6;delay++);
-                    PORT10_OMR = (1<<PS1)   ;                       // LED RED  on
-                    for(unsigned int delay=0;delay<DELAY/6;delay++);
-                    PORT10_OMR = (1<<PCL1);                         // LED RED  off
-                    for(unsigned int delay=0;delay<DELAY/6;delay++);
                     }
+                    note(3,18);
+                    note(2,18);
+                    note(0,18);
+                    PORT10_OMR = (1<<PS1)   ;                       // LED RED  on
+                    for(unsigned int delay=0;delay<DELAY/6;delay++);
+                    PORT10_OMR = (1<<PCL1);                         // LED RED  off
+                    for(unsigned int delay=0;delay<DELAY/6;delay++);
+                    PORT10_OMR = (1<<PS1)   ;                       // LED RED  on
+                    for(unsigned int delay=0;delay<DELAY/6;delay++);
+                    PORT10_OMR = (1<<PCL1);                         // LED RED  off
+                    for(unsigned int delay=0;delay<DELAY/6;delay++);
+
                     return 0;
                 }
             }
