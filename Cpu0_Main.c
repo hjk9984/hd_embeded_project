@@ -44,12 +44,24 @@ int core0_main(void)
             if(Parked()){
                 status = CAR_IN_UNLOCK;     //      DOOR UNLOCKED   /   PARKED
                 setting_RGB(status);
-                /*do something*/
+                /*delay*/
+                for(int i=0;i<DELAY;i++);
                 status = CAR_IN_LOCK;       //      DOOR LOCKED     /   PARKED
-                setting_RGB(status);
-                while(1);
              }
         }
+        else if(status == CAR_IN_LOCK){
+            if(Unlock())
+                status = CAR_IN_UNLOCK;
+        }
+        else if(status==CAR_IN_UNLOCK){
+            if(Unparked()){
+                status=DOOR_UNLOCK;
+                /*delay*/
+                for(int i=0;i<DELAY;i++);
+                status=DOOR_LOCK;
+            }
+        }
+
     }
     return (1);
 }
