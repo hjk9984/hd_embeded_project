@@ -27,6 +27,7 @@ int core0_main(void)
     init_LED_RGB();
     init_GTM_TOM0_PWM_RGB();
     init_VADC();
+    init_RGBLED();
 
     // CCU61 T12 100ms
     init_CCU6((myCCU6 *)&CCU61,100,0x0F);
@@ -34,30 +35,21 @@ int core0_main(void)
     // ENTIRE SEQUENCE
     while(1){
         setting_LED(status);
+        setting_RGB(status);
         if(status == DOOR_LOCK){
             if(Unlock())
                 status = DOOR_UNLOCK;
         }
         else if(status == DOOR_UNLOCK){
-
+            if(Parked()){
+                status = CAR_IN_UNLOCK;     //      DOOR UNLOCKED   /   PARKED
+                setting_RGB(status);
+                /*do something*/
+                status = CAR_IN_LOCK;       //      DOOR LOCKED     /   PARKED
+                setting_RGB(status);
+                while(1);
+             }
         }
-
-
-//        status = DOOR_LOCK;             //      DOOR LOCKED
-//        /*SW Enabled*/
-//        /*UltraSonic Disabled*/
-//
-//        if(Unlock())
-//            status = DOOR_UNLOCK;       //      DOOR UNLOCKED
-//
-//        /*RGB LED Enabled*/
-//        /*UltraSonic Enabled*/
-//
-//        if(Parked())
-//            status = CAR_IN_UNLOCK;     //      DOOR UNLOCKED   /   PARKED
-//            /*do something*/
-//            status = CAR_IN_LOCK;       //      DOOR LOCKED     /   PARKED
-//        while(1);
     }
     return (1);
 }

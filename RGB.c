@@ -54,11 +54,10 @@ void setting_RGB(int status){
 
     }
     else if(status == DOOR_UNLOCK){
-        RGB_RED_off();
-        RGB_BLUE_on();
+        RGB_RED_on();
     }
     else if(status == CAR_IN_UNLOCK){
-        RGB_RED_on();
+        RGB_BLUE_on();
 
     }
     else if(status == CAR_IN_LOCK){
