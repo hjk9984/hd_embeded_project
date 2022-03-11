@@ -67,6 +67,7 @@
 void init_ultrasonic(void);
 void init_ERU(void);
 void init_CCU60(void);
+void disable_ultrasonic(void);
 
 volatile unsigned int timer_cnt;
 volatile unsigned int start_time;
@@ -103,6 +104,10 @@ volatile unsigned int distance_curr;
 
 volatile int get_distance(){
     return distance;
+}
+
+void disable_ultrasonic(){
+    PORT15_IOCR4 &= ((0x1F) << PC5);
 }
 
 int Parked(void)

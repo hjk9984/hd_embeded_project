@@ -45,6 +45,7 @@ int core0_main(void)
         setting_LED(status);
         setting_RGB(status);
         if(status == DOOR_LOCK){
+            disable_ultrasonic();
             if(Unlock())
                 status = DOOR_UNLOCK;
         }
