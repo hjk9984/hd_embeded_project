@@ -88,7 +88,10 @@ void set_pd(int pd)
 }
 
 void note(int tone, int delay){
-    int tones[] = {261, 277, 294, 311, 330, 349, 370, 392};
+    int tones[] = {262, 278,294,311,330,349,370,392,415,440,466,494,
+                   523, 544,587,622,659,699,740,784,831,880,932,988};
+    //0(C)  1(C#)   2(D)  3(D#)  4(E)  5(F)  6(F#)  7(G)  8(G#)  9(A) 11(A#) 12(B)
+    //13(C) 14(C#) 15(D) 17(D#) 17(E) 18(F) 19(F#) 20(G) 21(G#) 22(A) 23(A#) 24(B)
     volatile int pwm_cnt = PWM_FREQ / tones[tone];
 
     GTM_TOM0_CH11_SR0 = pwm_cnt - 1;

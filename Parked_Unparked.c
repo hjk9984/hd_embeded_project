@@ -134,7 +134,7 @@ int Parked(void)
                 while( irq_ultra_sensor == 0 );
             }
 
-            if (distance < 10 & speed < 1)
+            if (distance < 10 & speed < 2)
                 return 1;
         }
     }

@@ -5,6 +5,7 @@
 #include "PWM_Buzzer.h"
 
 int stack[5]={0,};
+int distance_debounce=0;
 
 unsigned int Unlock(){
     stack_cnt = 0;
@@ -28,7 +29,12 @@ unsigned int Unlock(){
     SW_state_debounce = 0;
     while(1)
         {
-            if(get_distance() > 50 && get_status() == CAR_IN_LOCK)
+            if(get_distance()>50)
+                distance_debounce++;
+            else
+                distance_debounce=0;
+
+            if(distance_debounce>20 && get_status() == CAR_IN_LOCK)
                 return 2;
             irq_timer = 0;
             SW1_debounce_prev=SW1_debounce;
@@ -40,16 +46,12 @@ unsigned int Unlock(){
 
             //buzzer on when switch is pushed
             if(SW1_debounce_prev == 1 && SW1_debounce == 0)
-                note(0, 16);
+                note(9, 16);
 
             if(SW2_debounce_prev == 1 && SW2_debounce == 0)
-                note(1, 16);
+                note(9, 16);
 
-//            if(SW1_debounce_prev == 1 && SW1_debounce == 0){
-//                            note(0, 16);
-//                    }
             SW_state_prev = SW_state_curr;
-
             SW_state_curr = (SW2_debounce<<1) | (SW1_debounce<<0);          // [sw2_debounce,sw1_debounce]
 
             if(SW_state_curr!=SW_state_prev)
@@ -61,7 +63,7 @@ unsigned int Unlock(){
                 SW_state_debounce=SW_state_curr;
             }
 
-            if( SW_state_debounce != 0 )                            // ���� ������ debounce�� ��ȭ�� �����
+            if( SW_state_debounce != 0 )
             {
 
                 if     ( SW_state_debounce == 0x01 )                // SW1 is pushed,
@@ -76,13 +78,12 @@ unsigned int Unlock(){
     //                stack_cnt+=irq_timer;
                     PORT10_OMR = (1<<PS2)   ;                       // LED BLUE on
                 }
-                else                                                // �Ѵ� ������ error�� ����, stack�ʱ�ȭ, default��...
+                else
                 {
                     stack_cnt=0;
                     for(volatile int i =0;i<5;i++)
                         stack[i]=0;
 
-                    // Ʋ���� �ι� RED blink
                     PORT10_OMR = (1<<PCL1);                         // LED RED  off
                     PORT10_OMR = (1<<PS1)  ;                        // LED RED  on
                     PORT10_OMR = (1<<PS1) ;                         // LED RED  on
@@ -90,8 +91,6 @@ unsigned int Unlock(){
 
             }
             else
-            // �ƹ��͵� ������ ���� ����
-            // RED LED�� �� ����
             {
                 PORT10_OMR = (1<<PCL2);                             // LED BLUE  off
                 PORT10_OMR = (1<<PC1);
@@ -99,15 +98,12 @@ unsigned int Unlock(){
                 GTM_TOM0_CH2_SR1 = potential_meter_duty;
             }
 
-
-            // stack_cnt==8�̸� stack�� ��
             if(stack_cnt==8){
                 if(check_pwd(stack)){
-                    // ���� ��ġ�ϸ� BLUE LED on����, while�� break
-
-                    note(0,18);
-                    note(2,18);
-                    note(3,18);
+                    note(9,18);
+                    note(14,18);
+                    note(17,18);
+                    note(22,18);
 
                     PORT10_OMR = (1<<PCL2);                         // LED BLUE  off
                     for(unsigned int delay=0;delay<DELAY/6;delay++);
@@ -122,14 +118,14 @@ unsigned int Unlock(){
                     return 1;
                 }
                 else{
-                    //���Ѱ� Ʋ������ �ι� RED blink, stack_cnt�ʱ�ȭ, stack�ʱ�ȭ
                     stack_cnt=0;
                     for(unsigned int i=0;i<5;i++){
                         stack[i]=0;
                     }
-                    note(3,18);
-                    note(2,18);
                     note(0,18);
+                    note(0,18);
+                    note(0,18);
+
                     PORT10_OMR = (1<<PS1)   ;                       // LED RED  on
                     for(unsigned int delay=0;delay<DELAY/6;delay++);
                     PORT10_OMR = (1<<PCL1);                         // LED RED  off
@@ -146,13 +142,12 @@ unsigned int Unlock(){
 }
 
 int check_pwd(int *stack){
-    // stack�� ũ��� 4�� ����
     int value = 1;
     volatile unsigned int PWD[4]={1,1,1,1};
     for(volatile int i=0;i<4;i++){
         if(stack[i]!=PWD[i]){
-            value=0;                //�ϳ��� Ʋ���� value=0�� �ǰ� break
-            break;                  //�� ������ value�� 1�� ����
+            value=0;
+            break;
         }
     }
     return value;
@@ -162,8 +157,6 @@ int check_pwd(int *stack){
 __interrupt( 0x0F ) __vector_table( 0 )
 void CCU61_T12_ISR(void)
 {
-    // ���⼱ interrupt�� SW1,2�κ��� ����
-    // SW1�� 1�� �̻� ������ SW1_debounce=1
     SW1_prev = SW1_curr;
     SW1_curr = (PORT02_IN & (1<<P0)) == 0;
     SW2_prev = SW2_curr;
